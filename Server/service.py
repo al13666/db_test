@@ -13,6 +13,11 @@ def get_db_connection():
     return conn
 
 
+@app.route('/')
+def hello():
+
+    return "hello from db_test"
+
 
 @app.route('/show_achievements')
 def show_achievements():

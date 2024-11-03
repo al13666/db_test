@@ -1,0 +1,158 @@
+Приложение доступно по адресу:
+    http://localhost:PORT
+    пример: 
+    http://127.0.0.1:80
+
+
+Эндпоинты:
+    1./
+    Возвращает сообщение о работе сервера.
+    Пример ответа:
+
+        {
+        "message": "hello from db_test"
+        }
+
+    2. GET /show_achievements
+    Возвращает список всех достижений в базе данных.
+    Пример ответа:
+        [
+            {
+                "user1": "Ivan",
+                "points_user1": 150,
+                "user2": "John",
+                "points_user2": 80,
+                "difference_points": 70
+            }
+        ]
+
+
+    3. GET /find_user
+    Находит пользователя по имени.
+
+    Параметры:
+        name (string) — имя пользователя.
+
+    Пример запроса:
+    GET /find_user?name=Ivan
+
+    Пример ответа:
+        [
+            {
+                "id": 1,
+                "name": "Ivan",
+                "language": "ru"
+            }
+        ]
+
+
+
+    4. GET /add_achievement
+    Добавляет новое достижение в базу данных.
+
+    Параметры:
+        name (string) — название достижения.
+        points (int) — количество очков за достижение.
+        description (string) — описание достижения.
+        description_rus (string) — описание достижения на русском.
+        name_rus (string) — название достижения на русском.
+
+    Пример запроса:
+        GET /add_achievement?name=Ivan&points=5&description=description_achievement&description_rus=описание_достижения&name_rus=Иван
+
+
+    5. GET /add_relation
+    Добавляет связь между пользователем и достижением.
+    Параметры:
+        user (string) — имя пользователя.
+        achievement (string) — название достижения.
+
+    Пример запроса:
+        GET /add_relation?user=Ivan&achievement=Cleanliness
+    
+
+    6. GET /show_user_achievements
+    Возвращает список достижений конкретного пользователя.
+
+    Параметры:
+        name (string) — имя пользователя.
+
+    Пример запроса:
+    GET /show_user_achievements?name=Ivan
+
+    Пример ответа:
+        [
+            {
+                "name": "Ivan",
+                "time": "2024-11-01 12:00:00",
+                "achievement": "Cleanliness"
+            },
+            ...
+        ]
+
+    7. GGET /show_user_max_count_achievements
+    Возвращает имя пользователя с наибольшим количеством достижений.
+
+    Пример ответа:
+        [
+            {
+                "name": "Ivan",
+                "count_achievements": 5
+            }
+        ]
+
+    8. GET /show_user_max_points_achievements
+    Возвращает имя пользователя с максимальным количеством очков за достижения.
+
+
+    Пример ответа:
+        [
+            {
+                "name": "Ivan",
+                "points_achievements": 120
+            }
+        ]
+
+    9. GET /show_max_points_differences
+    Возвращает пары пользователей с максимальной разницей в очках за достижения.
+
+
+    Пример ответа:
+        [
+            {
+                "user1": "Ivan",
+                "points_user1": 150,
+                "user2": "John",
+                "points_user2": 80,
+                "difference_points": 70
+            }
+        ]
+
+    10. GET /show_min_points_differences
+    Возвращает пары пользователей с минимальной разницей в очках за достижения.
+
+
+    Пример ответа:
+        [
+            {
+                "user1": "Ivan",
+                "points_user1": 120,
+                "user2": "Anna",
+                "points_user2": 115,
+                "difference_points": 5
+            }
+        ]
+   
+        
+        
+    11. GET /show_users_with_consecutive_achievements_7_days
+    Возвращает список пользователей, которые получали достижения 7 дней подряд.
+
+
+    Пример ответа:
+        [
+            {
+                "name": "Ivan"
+            }
+        ]
+
