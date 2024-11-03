@@ -1,7 +1,9 @@
-from flask import Flask
+from flask import Flask, Response
 import psycopg2
 from flask import request
 import os
+from flask import jsonify
+import json
 
 app = Flask("TEST")
 
@@ -21,12 +23,16 @@ def show_achievements():
     request_to_db = "SELECT * FROM achievements;"
     cur.execute(request_to_db)
     achievements = cur.fetchall()
+    res = [
+        {"id": achiev[0], "name": achiev[1], "points": achiev[2], "description": achiev[3], "description_rus": achiev[4], "name_rus": achiev[5]}
+        for achiev in achievements
+    ]
     cur.close()
     conn.close()
-    res = ''
-    for achievement in achievements:
-        res += str(achievement) + '\n'
-    return res
+
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
+
+
 
 @app.route('/find_user')
 def find_user():
@@ -38,13 +44,14 @@ def find_user():
     request_to_db = "SELECT * FROM users WHERE name = '"+ name_user+ "';"
 
     cur.execute(request_to_db)
-    users = cur.fetchall()
+    user = cur.fetchall()
     cur.close()
     conn.close()
-    res = ''
-    for user in users:
-        res += str(user) + '\n'
-    return res
+    res = [
+        {"id": us[0], "name": us[1], "language": us[2]}
+        for us in user
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 @app.route('/add_achievement')
 def add_achievement():
@@ -65,10 +72,11 @@ def add_achievement():
     achievements = cur.fetchall()
     cur.close()
     conn.close()
-    res = 'hello'
-    for achievement in achievements:
-        res += str(achievement) + '\n'
-    return res
+    res = [
+        {"id": achiev[0], "name": achiev[1], "points": achiev[2], "description": achiev[3], "description_rus": achiev[4], "name_rus": achiev[5]}
+        for achiev in achievements
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 
 @app.route('/add_relation')
@@ -89,15 +97,12 @@ def add_relation():
 
     request_to_db = "INSERT INTO user_achievement (time, user_id, achievement_id) VALUES(now(), "+str(user_id[0][0])+", "+str(achievement_id[0][0])+");"
     cur.execute(request_to_db)
-    # ch = cur.fetchall()
     conn.commit()
     
     cur.close()
     conn.close()
     res = 'achievement '+ name_achievement+ ' given to user '+name_user
-    # if(ch):
-    #     for c in ch:
-    #         res += str(c)
+
 
     return res
 
@@ -115,9 +120,11 @@ def show_user_achievements():
     cur.close()
     conn.close()
     res = ''
-    for user_achievement in user_achievements:
-        res += str(user_achievement) + '\n' 
-    return res
+    res = [
+        {"name": achiev[0], "time": achiev[1], "achievement": achiev[2]}
+        for achiev in user_achievements
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 
 
@@ -132,10 +139,12 @@ def show_user_max_count_achievements():
 
     cur.close()
     conn.close()
-    res = ''
-    for user_achievement in user_achievements_count:
-        res += str(user_achievement) + '\n' 
-    return res
+    res = [
+        {"name": uac[0], "count_achievements": uac[1]}
+        for uac in user_achievements_count
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
+
 
 
 @app.route('/show_user_max_points_achievements')
@@ -145,14 +154,16 @@ def show_user_max_points_achievements():
  
     request_to_db = "WITH user_achievement_max_points AS ( SELECT u.name AS user_full_name, SUM(a.points) AS total_points FROM users u LEFT JOIN user_achievement ua ON ua.user_id = u.id LEFT JOIN achievements a ON a.id = ua.achievement_id GROUP BY u.name) SELECT user_full_name, total_points FROM user_achievement_max_points WHERE total_points = (SELECT MAX(total_points) FROM user_achievement_max_points);"
     cur.execute(request_to_db)
-    user_achievements_count = cur.fetchall()
+    user_achievements_points = cur.fetchall()
 
     cur.close()
     conn.close()
     res = ''
-    for user_achievement in user_achievements_count:
-        res += str(user_achievement) + '\n' 
-    return res
+    res = [
+        {"name": uap[0], "points_achievements": uap[1]}
+        for uap in user_achievements_points
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 
 @app.route('/show_max_points_differences')
@@ -166,10 +177,11 @@ def show_max_points_differences():
 
     cur.close()
     conn.close()
-    res = ''
-    for u in users_max_points_diff:
-        res += str(u) + '\n' 
-    return res
+    res = [
+        {"user1": umpd[0], "points_user1": umpd[1], "user2": umpd[2], "points_user2": umpd[3], "difference_points" : umpd[4]}
+        for umpd in users_max_points_diff
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 @app.route('/show_min_points_differences')
 def show_min_points_differences():
@@ -182,10 +194,11 @@ def show_min_points_differences():
 
     cur.close()
     conn.close()
-    res = ''
-    for u in users_min_points_diff:
-        res += str(u) + '\n' 
-    return res
+    res = [
+        {"user1": umpd[0], "points_user1": umpd[1], "user2": umpd[2], "points_user2": umpd[3], "difference_points" : umpd[4]}
+        for umpd in users_min_points_diff
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 
 @app.route('/show_users_with_consecutive_achievements_7_days')
@@ -195,14 +208,15 @@ def show_users_with_consecutive_achievements_7_days():
  
     request_to_db = "WITH consecutive_achievements AS ( SELECT user_id, time::date AS achievement_date, ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY time::date) - EXTRACT(EPOCH FROM time::date) / (24 * 60 * 60) AS date_group FROM user_achievement GROUP BY user_id, time::date), streaks AS ( SELECT user_id, COUNT(*) AS days_in_a_row FROM consecutive_achievements GROUP BY user_id, date_group HAVING COUNT(*) >= 7) SELECT u.name AS user_name FROM users u JOIN streaks s ON u.id = s.user_id;"
     cur.execute(request_to_db)
-    users_min_points_diff = cur.fetchall()
+    users = cur.fetchall()
 
     cur.close()
     conn.close()
-    res = ''
-    for u in users_min_points_diff:
-        res += str(u) + '\n' 
-    return res
+    res = [
+        {"name": u[0]}
+        for u in users
+    ]
+    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", debug=True)
