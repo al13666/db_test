@@ -48,12 +48,15 @@
 
     Ответ: JSON-список всех достижений после добавления нового.
 
-    3. /user/<string:name_user>
-    GET /user/<string:name_user>
+    3. /user
+    GET /user
     Находит пользователя по имени.
 
+    Параметры:
+    name (string) — имя пользователя.
+
     Пример запроса:
-    GET /user/Ivan
+    GET /find_user?name=Ivan
 
     Пример ответа:
         [
@@ -63,9 +66,6 @@
                 "language": "ru"
             }
         ]
-
-
-
 
 
     4. /relation

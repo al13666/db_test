@@ -70,14 +70,15 @@ def achievements():
         return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
     
 
-    
 
-@app.route('/user/<string:name_user>', methods = ['GET', 'POST', 'DELETE'])
-def find_user(name_user):
+
+@app.route('/user', methods = ['GET', 'POST', 'DELETE'])
+def find_user():
     if request.method=='GET':
         
         conn = get_db_connection()
         cur = conn.cursor()
+        name_user= request.args.get('name')
         
         request_to_db = "SELECT * FROM users WHERE name = '"+ name_user+ "';"
 
