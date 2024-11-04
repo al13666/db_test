@@ -72,37 +72,12 @@ def achievements():
 
     
 
-@app.route('/del')
-def delete():
-    conn = get_db_connection()
-    cur = conn.cursor()
-
-
-
-    request_to_db = "DELETE FROM achievements WHERE name = 'cats_concert';"
-    cur.execute(request_to_db)
-    request_to_db = "DELETE FROM achievements WHERE id > 34;"
-    cur.execute(request_to_db)
-    conn.commit()
-
-    cur.execute('SELECT * FROM achievements;')
-    achievements = cur.fetchall()
-    cur.close()
-    conn.close()
-    res = [
-        {"id": achiev[0], "name": achiev[1], "points": achiev[2], "description": achiev[3], "description_rus": achiev[4], "name_rus": achiev[5]}
-        for achiev in achievements
-    ]
-    return Response(json.dumps(res, ensure_ascii=False, indent=4), content_type="application/json")
-
 @app.route('/user/<string:name_user>', methods = ['GET', 'POST', 'DELETE'])
 def find_user(name_user):
     if request.method=='GET':
-        #  return f"User ID: {name_user}"
+        
         conn = get_db_connection()
         cur = conn.cursor()
-
-        # name_user= request.args.get('name')
         
         request_to_db = "SELECT * FROM users WHERE name = '"+ name_user+ "';"
 
@@ -130,12 +105,11 @@ def relation():
             name_user= data.get('name')
             name_achievement= data.get('name_achievement')
 
-        # name_user= request.args.get('user')
+       
         request_to_db = "SELECT id FROM users WHERE name= '"+ name_user+ "';"
         cur.execute(request_to_db)
         user_id = cur.fetchall()
 
-        # name_achievement= request.args.get('achievement')
         request_to_db = "SELECT id FROM achievements WHERE name= '"+ name_achievement+ "';"
         cur.execute(request_to_db)
         achievement_id = cur.fetchall()
@@ -158,7 +132,6 @@ def show_user_achievements(name_user):
     conn = get_db_connection()
     cur = conn.cursor()
 
-    # name_user= request.args.get('name')
     request_to_db = "SELECT u.name AS user_full_name, TO_CHAR(ua.time, 'YYYY-MM-DD HH24:MI:SS') AS achievement_time, CASE WHEN u.language = 'ru' THEN a.name_rus ELSE a.name END AS achievement_name FROM users u LEFT JOIN user_achievement ua ON ua.user_id = u.id LEFT JOIN achievements a ON a.id = ua.achievement_id WHERE u.name = '"+name_user+"';"
     cur.execute(request_to_db)
     user_achievements = cur.fetchall()
