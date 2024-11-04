@@ -13,28 +13,47 @@
         "message": "hello from db_test"
         }
 
-    2. GET /show_achievements
+    2. /achievements
+    GET /achievements
     Возвращает список всех достижений в базе данных.
     Пример ответа:
         [
             {
-                "user1": "Ivan",
-                "points_user1": 150,
-                "user2": "John",
-                "points_user2": 80,
-                "difference_points": 70
-            }
+                "id": 1,
+                "name": "achievement_name",
+                "points": 10,
+                "description": "Description in English",
+                "description_rus": "Описание на русском",
+                "name_rus": "Название на русском"
+            },
+            ...
         ]
 
 
-    3. GET /find_user
-    Находит пользователя по имени.
+    POST /achievements
+    Добавляет новое достижение в базу данных.
+    Тело запроса: JSON-объект с информацией о достижении:
 
-    Параметры:
-        name (string) — имя пользователя.
+    {
+        "name": "<str>",
+        "name_rus": "<str>",
+        "points": <int>,
+        "description": "<str>",
+        "description_rus": "<str>"
+    }
+
 
     Пример запроса:
-    GET /find_user?name=Ivan
+        GET /achievements -H "Content-Type: application/json" -d '{"name":"cats_concert", "points":20, "description":"performed at a concert with cats", "description_rus":"выступил на концерте с котиками", "name_rus":"концерт с котиками"}'
+
+    Ответ: JSON-список всех достижений после добавления нового.
+
+    3. /user/<string:name_user>
+    GET /user/<string:name_user>
+    Находит пользователя по имени.
+
+    Пример запроса:
+    GET /user/Ivan
 
     Пример ответа:
         [
@@ -47,38 +66,29 @@
 
 
 
-    4. GET /add_achievement
-    Добавляет новое достижение в базу данных.
-
-    Параметры:
-        name (string) — название достижения.
-        points (int) — количество очков за достижение.
-        description (string) — описание достижения.
-        description_rus (string) — описание достижения на русском.
-        name_rus (string) — название достижения на русском.
-
-    Пример запроса:
-        GET /add_achievement?name=Ivan&points=5&description=description_achievement&description_rus=описание_достижения&name_rus=Иван
 
 
-    5. GET /add_relation
+    4. /relation
+    POST /relation
     Добавляет связь между пользователем и достижением.
-    Параметры:
-        user (string) — имя пользователя.
-        achievement (string) — название достижения.
+
+    Тело запроса: JSON-объект с информацией о достижении:
+
+    {
+        "name": "<str>",
+        "name_achievement": "<str>",
+    }
 
     Пример запроса:
-        GET /add_relation?user=Ivan&achievement=Cleanliness
+        GET /relation -H "Content-Type: application/json" -d '{"name":"Man Mansly", "name_achievement":"cats_concert"}'
     
 
-    6. GET /show_user_achievements
+    5. /show_user_achievements/<string:name_user>
+    GET /show_user_achievements/<string:name_user>
     Возвращает список достижений конкретного пользователя.
 
-    Параметры:
-        name (string) — имя пользователя.
-
     Пример запроса:
-    GET /show_user_achievements?name=Ivan
+    GET /show_user_achievements/Ivan
 
     Пример ответа:
         [
@@ -90,8 +100,16 @@
             ...
         ]
 
-    7. GGET /show_user_max_count_achievements
+    7. /statistic/<string:function>
+    GET /statistic/<string:function>
+
+    Описание: Получает статистику по различным функциям. Поддерживаемые значения параметра function:
+    
+    /max_count_achievements
     Возвращает имя пользователя с наибольшим количеством достижений.
+
+    Пример запроса:
+    GET /statistic/max_points_achievements
 
     Пример ответа:
         [
@@ -101,7 +119,7 @@
             }
         ]
 
-    8. GET /show_user_max_points_achievements
+    /max_points_achievements
     Возвращает имя пользователя с максимальным количеством очков за достижения.
 
 
@@ -113,7 +131,7 @@
             }
         ]
 
-    9. GET /show_max_points_differences
+    /max_points_difference
     Возвращает пары пользователей с максимальной разницей в очках за достижения.
 
 
@@ -128,7 +146,7 @@
             }
         ]
 
-    10. GET /show_min_points_differences
+    /min_points_difference
     Возвращает пары пользователей с минимальной разницей в очках за достижения.
 
 
@@ -145,7 +163,7 @@
    
         
         
-    11. GET /show_users_with_consecutive_achievements_7_days
+    /got_achievements_7_days_in_row
     Возвращает список пользователей, которые получали достижения 7 дней подряд.
 
 
