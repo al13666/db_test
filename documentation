@@ -56,7 +56,7 @@
     name (string) — имя пользователя.
 
     Пример запроса:
-    GET /find_user?name=Ivan
+    GET /user?name=Ivan
 
     Пример ответа:
         [
@@ -100,7 +100,7 @@
             ...
         ]
 
-    7. /statistic/<string:function>
+    6. /statistic/<string:function>
     GET /statistic/<string:function>
 
     Описание: Получает статистику по различным функциям. Поддерживаемые значения параметра function:
