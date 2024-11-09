@@ -19,16 +19,16 @@ Project Name : db_test
 Установка:   
     1.Клонируйте репозиторий:   
     HTTP:   
-        > git clone https://github.com/al13666/db_test.git   
+        ``` git clone https://github.com/al13666/db_test.git```    
     или SSH:  
-        git clone git@github.com:al13666/db_test.git   
+        ``` git clone git@github.com:al13666/db_test.git```    
     перейдите в репозиторий:    
         ``` cd /путь/к/проекту/ ```      
     2.Запустите контейнер:  
-        docker-compose up --build   
+        ```docker-compose up --build```    
     3.Приложение доступно по адресу:   
-        http://localhost:PORT   
+        ```http://localhost:PORT```   
         пример:   
-        http://127.0.0.1:80   
+        ```http://127.0.0.1:80```   
 
 
