@@ -3,15 +3,15 @@
 Project Name : db_test
 
 Структура проекта
-        .
-├── docker-compose.yml
-├── nginx.conf
-├── Server/
-│   ├── Dockerfile
-│   ├── service.py
-│   └── requirements.txt
-└── db-init/
-    └── db.sql
+                .
+        ├── docker-compose.yml   
+        ├── nginx.conf   
+        ├── Server/   
+        │   ├── Dockerfile   
+        │   ├── service.py   
+        │   └── requirements.txt   
+        └── db-init/   
+            └── db.sql   
 
 Предварительные требования:
         - Установите Docker Compose
