@@ -1,0 +1,1 @@
+INSERT INTO user_achievement (time, user_id, achievement_id) VALUES (now(), %s, %s);

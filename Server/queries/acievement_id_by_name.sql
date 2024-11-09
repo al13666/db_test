@@ -1,0 +1,1 @@
+SELECT id FROM achievements WHERE name = %s;
