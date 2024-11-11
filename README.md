@@ -8,6 +8,12 @@ Project Name : db_test
         ├── nginx.conf   
         ├── Server/   
         │   ├── Dockerfile   
+        │   ├── routes   
+        │   │   ├── functions.py   
+        │   │   ├── ...   
+        │   ├── queries   
+        │   │   ├── query.sql   
+        │   │   ├── ...   
         │   ├── service.py   
         │   └── requirements.txt   
         └── db-init/   
